@@ -9,10 +9,10 @@ type Props = {
   className?: string;
 };
 
-const Invite = ({ asCard = true, className }: Props) => {
+const Account = ({ asCard = true, className }: Props) => {
   return (
     <section
-      className={cn('w-full flex justify-center', 'px-4 pt-8 ', className)}
+      className={cn('w-full flex justify-center', 'px-4 py-8 ', className)}
       aria-labelledby="invite-heading">
       <div
         className={cn(
@@ -81,4 +81,4 @@ const Invite = ({ asCard = true, className }: Props) => {
   );
 };
 
-export default Invite;
+export default Account;

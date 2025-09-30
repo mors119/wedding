@@ -11,14 +11,13 @@ export const DDay = () => {
     <div
       className={cn(
         'absolute left-1/2 -translate-x-1/2 top-24',
-        'px-3 py-1.5 rounded-full',
+        'px-5 py-3 rounded-full',
         'shadow-sm',
         'text-sm font-semibold tracking-wide bg-neutral-100/80',
         '',
       )}
       aria-live="polite">
-      <span>{}</span>
-      <span className=" bg-clip-text text-transparent bg-gradient-to-r from-amber-500 via-rose-500 to-amber-500 ">
+      <span className=" bg-clip-text text-transparent bg-gradient-to-r from-amber-500 via-rose-500 to-amber-500 text-2xl">
         {!showCountdown
           ? dDayLabel
           : `${hours > 0 ? hours + '시간' : ''} ${minutes}분 남았습니다`}

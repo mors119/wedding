@@ -4,9 +4,11 @@ import { SoundButton } from './components/SoundButton';
 import { useImageReady } from './hooks/useImageReady';
 import Hero from './modules/hero/Hero';
 import Invite from './modules/invite/Invite';
-import Info from './modules/info/Info';
+import Location from './modules/location/Location';
 
 import { Contact } from './modules/contact/Contact';
+import { Gallery } from './modules/gallery/Gallery';
+import { Active } from './modules/gallery/Active';
 
 function App() {
   const { error, ready, setComplete, complete } = useImageReady(
@@ -30,6 +32,7 @@ function App() {
         import('./components/SoundButton');
         import('./modules/hero/Hero');
         import('./modules/invite/Invite');
+        import('./modules/location/Location');
       });
     }
   }, [ready, complete]);
@@ -40,14 +43,17 @@ function App() {
         {/* 첫 화면 */}
         <Banner ready={ready} error={error} onComplete={handleComplete} />
         {complete && (
-          <div>
+          <div className="">
             <SoundButton />
             <Hero complete={complete} />
             <Invite />
             <Contact />
-            <Info />
+            <Location />
+            <Gallery />
           </div>
         )}
+        {/* 라이트박스 */}
+        <Active />
       </main>
     </div>
   );

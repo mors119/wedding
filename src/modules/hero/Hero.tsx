@@ -28,7 +28,7 @@ const Hero = ({ complete }: HeroProps) => {
           className="mb-4 max-h-[700px] shadow-lg"
         />
         <div
-          className="text-center text-2xl flex flex-col gap-1 font-semibold tracking-wide
+          className="text-center text-2xl md:text-3xl flex flex-col gap-1 font-semibold tracking-wide
                         bg-clip-text text-transparent bg-gradient-to-r from-amber-500 via-rose-500 to-amber-500"
           style={fontStyle.pacifico}>
           <span>We are getting</span>

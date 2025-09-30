@@ -145,8 +145,6 @@ export function Firework({
 
 export function FireworksManager({ complete }: { complete: boolean }) {
   const textures = useLoader(THREE.TextureLoader, [
-    '/particles/1.png',
-    '/particles/2.png',
     '/particles/3.png',
     '/particles/4.png',
     '/particles/5.png',

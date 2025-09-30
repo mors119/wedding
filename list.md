@@ -13,3 +13,14 @@
 - 일정 등록 / 링크 복사/ 카카오 공유
 
 ---
+
+### https:localhost
+
+brew install mkcert nss
+mkcert -install
+
+mkdir -p ./certs
+mkcert \
+ -key-file ./certs/localhost-key.pem \
+ -cert-file ./certs/localhost-cert.pem \
+ localhost 127.0.0.1 ::1
