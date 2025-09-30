@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Divider } from '@/components/Divider';
 import { fontStyle } from '@/lib/fonts';
 import { useActive } from '@/store/activeStore';
+import { useMediaQuery } from '@/hooks/useMediaQuery';
 
 export type PictureItem = {
   url: string;
@@ -26,28 +27,44 @@ const ITEMS: PictureItem[] = Object.entries(modules).map(([path, url]) => {
   };
 });
 
-const INITIAL_COUNT = 9;
-
 export const Gallery = () => {
   const active = useActive((s) => s.active);
   const open = useActive((s) => s.open);
+  const close = useActive((s) => s.close);
+
+  // md 이상 여부
+  const isMdUp = useMediaQuery('(min-width: 768px)');
+  // 뷰포트에 따라 초기 노출 개수 결정: md 미만 9, md 이상 12
+  const initialCount = isMdUp ? 12 : 9;
 
   const [expanded, setExpanded] = useState(false);
   const topRef = useRef<HTMLDivElement | null>(null);
 
-  // Esc로 라이트박스 닫기
+  // Esc로 라이트박스 닫기 (기존 버그 fix: close() 호출)
   useEffect(() => {
-    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && active === null;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && active) close();
+    };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [active]);
+  }, [active, close]);
 
-  const visibleItems = expanded ? ITEMS : ITEMS.slice(0, INITIAL_COUNT);
-  const hasMore = ITEMS.length > INITIAL_COUNT;
+  // 뷰포트가 바뀌면 접힌 상태일 때만 count를 재적용하고, 펼쳐진 상태면 유지
+  useEffect(() => {
+    // 접힌 상태일 때만 상단으로 살짝 스크롤(옵션)
+    if (!expanded) {
+      requestAnimationFrame(() => {
+        topRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    }
+  }, [isMdUp, expanded]);
+
+  const visibleItems = expanded ? ITEMS : ITEMS.slice(0, initialCount);
+  const remaining = Math.max(ITEMS.length - visibleItems.length, 0);
+  const hasMore = remaining > 0;
 
   const handleExpand = () => {
     setExpanded(true);
-    // 펼치고 나서 그리드 맨 위로 부드럽게 스크롤
     requestAnimationFrame(() => {
       topRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
@@ -79,7 +96,7 @@ export const Gallery = () => {
           'px-6 md:px-10 py-10 md:py-12',
         )}
         style={fontStyle.nanumGothic}>
-        {/* 헤드라인: Invite와 동일 톤 */}
+        {/* 헤드라인 */}
         <h2
           id="info-heading"
           style={fontStyle.pacifico}
@@ -92,8 +109,8 @@ export const Gallery = () => {
           Contact
         </h2>
 
-        {/* 장식 디바이더 (Invite와 동일 간격) */}
         <Divider className="my-8" />
+
         {/* 스크롤 기준점 */}
         <div ref={topRef} />
 
@@ -114,7 +131,7 @@ export const Gallery = () => {
                   'shadow-sm hover:shadow-md transition-shadow',
                 )}
                 aria-label={`Open ${it.title}`}>
-                <div className="aspect-[1/1] w-full">
+                <div className="aspect-square w-full">
                   <img
                     src={it.url}
                     alt={it.title}
@@ -126,14 +143,14 @@ export const Gallery = () => {
             ))}
           </div>
 
-          {/* 더보기 페이드 오버레이 (접힌 상태에서만) */}
+          {/* 접힌 상태에서만 페이드 */}
           {!expanded && hasMore && (
             <div className="pointer-events-none absolute inset-x-0 bottom-0 h-5 bg-gradient-to-t from-white to-transparent" />
           )}
         </div>
 
         {/* 액션 영역 */}
-        {hasMore && (
+        {ITEMS.length > (isMdUp ? 12 : 9) && (
           <div className="mt-4 flex items-center justify-center gap-3">
             {!expanded ? (
               <Button
@@ -141,7 +158,7 @@ export const Gallery = () => {
                 aria-expanded={expanded}
                 className="min-w-[120px]"
                 variant="outline">
-                더보기 ({ITEMS.length - INITIAL_COUNT}장)
+                더보기 ({remaining}장)
               </Button>
             ) : (
               <Button
